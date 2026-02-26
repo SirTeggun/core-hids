@@ -41,6 +41,10 @@ Thumbs.db
 *.pid
 *.lock
 
+*.trace
+profile/
+tmp/
+
 src/__pycache__/
 tests/__pycache__/
 
