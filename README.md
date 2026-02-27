@@ -10,23 +10,27 @@ The system is developed in Python following a strict separation-of-concerns desi
 
 CORE-HIDS is intended to function both as a practical monitoring solution and as a security research framework for studying host-based threat detection methodologies, behavioral baseline modeling, and automated security response orchestration.
 
-The long-term objective of the project is to evolve into a high-performance detection platform capable of supporting modular intelligence layers for advanced host security analytics.
 ---
 
 ## Project Structure
 
 ```bash
-src/
-├── __init__.py
-├── main.py
-├── config.py
-├── logger.py
-├── detector.py
-├── log_monitor.py
-├── baseline.py
-├── alerts.py
-├── persistence.py
-├── worker.py
+Project Root
+├── src/
+│   ├── __init__.py
+│   ├── alerts.py
+│   ├── baseline.py
+│   ├── config.py
+│   ├── detector.py
+│   ├── log_monitor.py
+│   ├── logger.py
+│   ├── main.py
+│   ├── persistence.py
+│   └── worker.py
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ---
