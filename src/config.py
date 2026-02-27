@@ -1,5 +1,5 @@
 # ================================
-# Mini HIDS Configuration File
+# CORE-HIDS Configuration File
 # ================================
 
 import logging
