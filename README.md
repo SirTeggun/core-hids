@@ -215,6 +215,12 @@ The baseline and anomaly detection components are implemented to provide statist
 
 The detection engine is the core behavioral security component of the project, designed to identify suspicious activities through stateful scoring, statistical baseline profiling, and burst pattern analysis. The module implements a hybrid rule-based anomaly detection pipeline combining temporal decay modeling, threshold-driven intrusion scoring, and adaptive history tracking.
 
+### Log Monitoring Module
+
+### ✅ Features Covered by Tests
+
+The log monitoring component provides real-time log ingestion and event extraction capabilities for the HIDS pipeline. It supports safe file handling, Unicode log processing, timestamp annotation, and bounded event collection to prevent memory overload.
+
 ### Running Tests
 
 ```bash
