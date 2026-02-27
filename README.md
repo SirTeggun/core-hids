@@ -212,7 +212,7 @@ Handling of invalid or unexpected inputs
 
 Support for custom timestamps
 
-### Testing Strategy
+### 🧪 Testing Strategy
 
 The alert generator is tested using pytest to ensure reliability and correctness under different input scenarios.
 
