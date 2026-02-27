@@ -31,3 +31,17 @@ Planned evolution of the architecture includes:
 ---
 
 ## 📁 Project Structure
+
+src/
+├── detector.py
+├── baseline.py
+├── alerts.py
+├── config.py
+├── log_monitor.py
+├── logger.py
+├── worker.py
+├── persistence.py
+├── main.py
+
+tests/
+logs/
