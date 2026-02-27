@@ -132,7 +132,7 @@ pip install -r requirements.txt
 Run the HIDS system using:
 
 ```bash
-python src/main.py
+python -m src.main
 ```
 
 ---
