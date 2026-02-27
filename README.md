@@ -116,9 +116,18 @@ git clone https://github.com/SirTeggun/CORE-HIDS.git
 cd CORE-HIDS
 ```
 ```bash
+python -m venv .venv
+```
+```bash
+source .venv/bin/activate # or .venv\Scripts\activate on Windows
+```
+```bash
 pip install -r requirements.txt
 ```
-
+## Run Tests
+```bash
+pytest tests/ -v
+```
 ---
 
 ## Usage
