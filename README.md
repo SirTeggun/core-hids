@@ -212,22 +212,8 @@ Handling of invalid or unexpected inputs
 
 Support for custom timestamps
 
-### 🧪 Testing Strategy
+### Anomaly Detection and Baseline Profiling Module.
 
-The alert generator is tested using pytest to ensure reliability and correctness under different input scenarios.
+### ✅ Features Covered by Tests
 
-Test cases include:
-
-Standard event processing
-
-Missing field validation with exception handling
-
-Type safety enforcement
-
-Boundary and default behavior verification
-
-### ▶️ Running Tests
-
-```bash
-pytest tests/test_alerts.py -v
-```
+The baseline and anomaly detection components are implemented to provide statistical event profiling and security signal validation. The module leverages windowed baseline tracking, variance-based modeling, and threshold-driven anomaly evaluation to ensure reliable detection of abnormal behavioral patterns. Unit tests using GitHub Actions-compatible workflows verify correctness across edge cases, input validation scenarios, and statistical decision logic.
