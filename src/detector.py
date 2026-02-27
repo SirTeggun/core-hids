@@ -1,6 +1,7 @@
 import time
 import statistics
 from src.alerts import trigger_alert
+from typing import Dict, Any
 
 
 class DetectionEngine:
@@ -160,3 +161,22 @@ class DetectionEngine:
                     f"High risk intrusion detected from IP {ip} "
                     f"(score={state['score']})"
                 )
+
+
+def analyze_event(event: Dict[str, Any]) -> Dict[str, Any]:
+    if not isinstance(event, dict):
+        raise TypeError("event must be a dictionary")
+    if "process" not in event:
+        raise KeyError("missing required key: 'process'")
+    if "activity_score" not in event:
+        raise KeyError("missing required key: 'activity_score'")
+    try:
+        score = float(event["activity_score"])
+    except (TypeError, ValueError):
+        raise TypeError("activity_score must be numeric")
+    detected = score >= 90
+    result = {"detected": detected}
+    for key, value in event.items():
+        if key not in ["process", "activity_score"]:
+            result[key] = value
+    return result

@@ -217,3 +217,15 @@ Support for custom timestamps
 ### ✅ Features Covered by Tests
 
 The baseline and anomaly detection components are implemented to provide statistical event profiling and security signal validation. The module leverages windowed baseline tracking, variance-based modeling, and threshold-driven anomaly evaluation to ensure reliable detection of abnormal behavioral patterns. Unit tests using GitHub Actions-compatible workflows verify correctness across edge cases, input validation scenarios, and statistical decision logic.
+
+### Detection Engine Module
+
+### ✅ Features Covered by Tests
+
+The detection engine is the core behavioral security component of the project, designed to identify suspicious activities through stateful scoring, statistical baseline profiling, and burst pattern analysis. The module implements a hybrid rule-based anomaly detection pipeline combining temporal decay modeling, threshold-driven intrusion scoring, and adaptive history tracking.
+
+### Running Tests
+
+```bash
+pytest tests/test_detector.py -v
+```
