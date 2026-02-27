@@ -152,7 +152,7 @@ def generate_alert(event: Dict[str, Any]) -> Dict[str, Any]:
             "event_type": "ERROR",
             "source": "internal"
         },
-        fatal_exceptions=(KeyboardInterrupt, SystemExit)
+        fatal_exceptions=(KeyboardInterrupt, SystemExit, TypeError, ValueError)
     )
 
 

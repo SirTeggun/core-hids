@@ -54,7 +54,7 @@ def build_baseline(events: List[Dict[str, Any]]) -> Dict[str, float]:
     return PipelineExecutor.execute(
         _inner,
         default={"mean": 0.0, "variance": 1.0},
-        fatal_exceptions=(KeyboardInterrupt, SystemExit)
+        fatal_exceptions=(KeyboardInterrupt, SystemExit, ValueError, KeyError, TypeError)
     )
 
 
@@ -81,5 +81,5 @@ def evaluate_anomaly(event: Dict[str, Any], profile: Any) -> bool:
     return PipelineExecutor.execute(
         _inner,
         default=False,
-        fatal_exceptions=(KeyboardInterrupt, SystemExit)
+        fatal_exceptions=(KeyboardInterrupt, SystemExit, KeyError, TypeError, ValueError)
     )
