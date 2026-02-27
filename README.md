@@ -84,22 +84,32 @@ Supports concurrent event processing and pipeline execution.
 git clone https://github.com/yourusername/CORE-HIDS.git
 cd CORE-HIDS
 pip install -r requirements.txt
-Usage
+
+```
+
+---
+
+## Usage
 
 Run the HIDS system using:
 
+```bash
 python src/main.py
-Configuration
+```
+
+---
+
+## Configuration
 
 System parameters can be customized inside:
 
+```bash
 src/config.py
+```
 
-Adjust settings according to monitoring and detection requirements.
+## Roadmap
 
-Roadmap
-
-✅ Modular detection pipeline
+🔧 Modular detection pipeline
 
 🔧 DetectionEngine refactor
 
@@ -111,20 +121,20 @@ Roadmap
 
 🔧 Performance optimization for real-time monitoring
 
-Contributing
+## Contributing
 
-Fork the repository
+1. Fork the repository
 
-Create a feature branch
+2. Create a feature branch
 
-Implement and test your changes
+3. Implement and test your changes
 
-Submit a Pull Request with detailed explanation
+4. Submit a Pull Request with detailed explanation
 
-License
+## License
 
 Specify the project license inside the LICENSE file.
 
-Security Notice
+## Security Notice
 
 CORE-HIDS is a security research project. Avoid exposing sensitive monitoring components without proper hardening and access control.
