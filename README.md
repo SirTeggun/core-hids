@@ -15,7 +15,7 @@ CORE-HIDS is intended to function both as a practical monitoring solution and as
 ## Project Structure
 
 ```bash
-Project Root
+CORE-HIDS/
 ├── src/
 │   ├── __init__.py
 │   ├── alerts.py
@@ -28,6 +28,15 @@ Project Root
 │   ├── persistence.py
 │   └── worker.py
 │
+├── tests/
+│   ├── __init__.py
+│   ├── test_alerts.py
+│   ├── test_baseline.py
+│   ├── test_detector.py
+│   └── test_log_monitor.py
+│
+├── pyproject.toml
+├── requirements.txt
 ├── .gitignore
 ├── LICENSE
 └── README.md
