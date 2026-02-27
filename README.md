@@ -2,10 +2,15 @@
 
 ## Overview
 
-CORE-HIDS is a Host-Based Intrusion Detection System designed to monitor system activities, analyze behavioral patterns, and detect anomalous behaviors using a modular detection pipeline.
+CORE-HIDS is an advanced research-oriented Host-Based Intrusion Detection framework designed to explore modern approaches to system-level security monitoring and behavioral anomaly detection.
 
-The project is written in Python and follows a separation-of-concerns architecture to ensure maintainability, extensibility, and research-oriented development.
+The project focuses on constructing a flexible detection environment capable of analyzing host activity through a modular and extensible processing pipeline. Rather than implementing a rigid detection strategy, CORE-HIDS is architected as an experimental security platform where detection logic, profiling mechanisms, and response policies can evolve independently.
 
+The system is developed in Python following a strict separation-of-concerns design philosophy, enabling long-term maintainability and supporting progressive enhancement of detection capabilities. The architecture is optimized for extensibility, allowing future integration of rule-based detection engines, statistical anomaly models, and severity-driven escalation workflows.
+
+CORE-HIDS is intended to function both as a practical monitoring solution and as a security research framework for studying host-based threat detection methodologies, behavioral baseline modeling, and automated security response orchestration.
+
+The long-term objective of the project is to evolve into a high-performance detection platform capable of supporting modular intelligence layers for advanced host security analytics.
 ---
 
 ## Project Structure
