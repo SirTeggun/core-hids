@@ -2,12 +2,13 @@ import logging
 import logging.handlers
 import threading
 import sys
-from datetime import datetime
-from typing import Optional, Any
+from datetime import datetime, timezone
+from typing import Optional, Any, Dict
 
 _logger: Optional[logging.Logger] = None
 _lock = threading.RLock()
 _configured = False
+
 
 class StructuredAlertFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
@@ -16,14 +17,18 @@ class StructuredAlertFormatter(logging.Formatter):
         severity = getattr(record, "severity", "INFO")
         message = record.getMessage()
         metadata = getattr(record, "metadata", "")
+
         if metadata is None:
             metadata = ""
         elif isinstance(metadata, dict):
             import json
             metadata = json.dumps(metadata, default=str)
+
         if record.exc_info:
             message += "\n" + self.formatException(record.exc_info)
+
         return f"{ts} | {event_type} | {severity} | {message} | {metadata}"
+
 
 def setup_alert_system(
     log_file: str = "hids_alerts.log",
@@ -35,9 +40,11 @@ def setup_alert_system(
     with _lock:
         if _configured:
             return _logger
+
         logger = logging.getLogger("HIDSAlert")
         logger.setLevel(level)
         logger.propagate = False
+
         handler = logging.handlers.RotatingFileHandler(
             log_file,
             maxBytes=max_bytes,
@@ -45,9 +52,11 @@ def setup_alert_system(
         )
         handler.setFormatter(StructuredAlertFormatter())
         logger.addHandler(handler)
+
         _logger = logger
         _configured = True
         return _logger
+
 
 def send_alert(
     message: str,
@@ -60,6 +69,7 @@ def send_alert(
     with _lock:
         if not _configured:
             setup_alert_system()
+
         level_map = {
             "INFO": logging.INFO,
             "WARNING": logging.WARNING,
@@ -67,12 +77,15 @@ def send_alert(
             "CRITICAL": logging.CRITICAL
         }
         level = level_map.get(severity.upper(), logging.WARNING)
+
         extra = {
             "event_type": event_type,
             "severity": severity.upper(),
             "metadata": metadata
         }
+
         _logger.log(level, message, extra=extra, exc_info=exc_info)
+
 
 def trigger_alert(message: str) -> None:
     send_alert(
@@ -80,6 +93,47 @@ def trigger_alert(message: str) -> None:
         event_type="SECURITY",
         severity="WARNING"
     )
+
+
+def generate_alert(event: Dict[str, Any]) -> Dict[str, Any]:
+    if not isinstance(event, dict):
+        raise TypeError("event must be a dictionary")
+
+    if "type" not in event:
+        raise ValueError("missing required field: type")
+    if "message" not in event:
+        raise ValueError("missing required field: message")
+
+    severity_map = {
+        "info": "LOW",
+        "suspicious_activity": "MEDIUM",
+        "multiple_failures": "HIGH",
+        "critical_anomaly": "CRITICAL"
+    }
+    event_type = event["type"]
+    severity = severity_map.get(event_type, "LOW")
+
+    if "timestamp" in event:
+        timestamp = event["timestamp"]
+    else:
+        timestamp = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+
+    description = event["message"]
+
+    alert = {
+        "severity": severity,
+        "timestamp": timestamp,
+        "description": description,
+        "event_type": event_type,
+        "source": event.get("source", "unknown")
+    }
+
+    for key, value in event.items():
+        if key not in ["type", "message", "timestamp", "severity", "description", "event_type", "source"]:
+            alert[key] = value
+
+    return alert
+
 
 if __name__ == "__main__":
     setup_alert_system("test_alerts.log", max_bytes=1024, backup_count=3)

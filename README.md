@@ -185,3 +185,49 @@ Specify the project license inside the LICENSE file.
 ## Security Notice
 
 CORE-HIDS is a security research project. Avoid exposing sensitive monitoring components without proper hardening and access control.
+
+## Tests
+
+### Alert Generation Module
+
+The alert generation component is responsible for transforming raw security events into structured alert objects enriched with metadata such as severity classification, timestamps, and contextual information.
+
+### ✅ Features Covered by Tests
+
+The module is validated through automated unit tests that verify:
+
+Proper alert structure enforcement
+
+Required field validation (type, message)
+
+Severity mapping based on event categories
+
+Automatic timestamp generation in ISO format
+
+Context propagation from input events
+
+Consistent uppercase severity normalization
+
+Handling of invalid or unexpected inputs
+
+Support for custom timestamps
+
+### Testing Strategy
+
+The alert generator is tested using pytest to ensure reliability and correctness under different input scenarios.
+
+Test cases include:
+
+Standard event processing
+
+Missing field validation with exception handling
+
+Type safety enforcement
+
+Boundary and default behavior verification
+
+### ▶️ Running Tests
+
+```bash
+pytest tests/test_alerts.py -v
+```
