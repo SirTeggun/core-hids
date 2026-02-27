@@ -5,6 +5,7 @@ import queue
 from typing import List, Dict, Any, Optional
 
 from src.logger import setup_logger
+from src.executor import PipelineExecutor
 
 logger = setup_logger("LogMonitor")
 
@@ -48,35 +49,38 @@ def monitor_log(
             last_position = f.tell()
 
             while not shutdown_event.is_set():
-                try:
+                def _process_line():
+                    nonlocal last_position
                     f.seek(last_position)
                     line = f.readline()
                     last_position = f.tell()
+                    return line
 
-                    if not line:
-                        if shutdown_event.wait(poll_interval):
-                            break
-                        continue
+                line = PipelineExecutor.execute(
+                    _process_line,
+                    default="",
+                    fatal_exceptions=(KeyboardInterrupt, SystemExit)
+                )
 
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    if FAILED_LOGIN_PATTERN.search(line):
-                        ip = extract_ip(line)
-                        if ip:
-                            now = time.time()
-                            key = f"{ip}:{line}"
-                            if key in event_cache and now - event_cache[key] < CACHE_TTL:
-                                continue
-                            event_cache[key] = now
-                            logger.info(f"Detected IP: {ip}")
-                            event_queue.put(ip)
-
-                except Exception as e:
-                    logger.error(f"Log monitoring runtime error: {e}")
+                if not line:
                     if shutdown_event.wait(poll_interval):
                         break
+                    continue
+
+                line = line.strip()
+                if not line:
+                    continue
+
+                if FAILED_LOGIN_PATTERN.search(line):
+                    ip = extract_ip(line)
+                    if ip:
+                        now = time.time()
+                        key = f"{ip}:{line}"
+                        if key in event_cache and now - event_cache[key] < CACHE_TTL:
+                            continue
+                        event_cache[key] = now
+                        logger.info(f"Detected IP: {ip}")
+                        event_queue.put(ip)
 
     except Exception as e:
         logger.error(f"Fatal log monitor error: {e}")
@@ -94,8 +98,8 @@ def collect_events(limit: int = 10, log_file: Optional[str] = None) -> List[Dict
         logger.warning(f"Log file {path} does not exist")
         return []
 
-    events = []
-    try:
+    def _inner():
+        events = []
         with open(path, 'r', encoding='utf-8', errors='ignore') as f:
             lines = f.readlines()
             start = max(0, len(lines) - limit)
@@ -107,7 +111,10 @@ def collect_events(limit: int = 10, log_file: Optional[str] = None) -> List[Dict
                         "message": line,
                         "timestamp": time.time()
                     })
-    except Exception as e:
-        logger.exception(f"Error reading log file {path}: {e}")
+        return events
 
-    return events
+    return PipelineExecutor.execute(
+        _inner,
+        default=[],
+        fatal_exceptions=(KeyboardInterrupt, SystemExit)
+    )

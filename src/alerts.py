@@ -4,6 +4,7 @@ import threading
 import sys
 from datetime import datetime, timezone
 from typing import Optional, Any, Dict
+from src.executor import PipelineExecutor
 
 _logger: Optional[logging.Logger] = None
 _lock = threading.RLock()
@@ -65,26 +66,33 @@ def send_alert(
     metadata: Optional[Any] = None,
     exc_info: bool = False
 ) -> None:
-    global _logger, _configured
-    with _lock:
-        if not _configured:
-            setup_alert_system()
+    def _inner():
+        global _logger, _configured
+        with _lock:
+            if not _configured:
+                setup_alert_system()
 
-        level_map = {
-            "INFO": logging.INFO,
-            "WARNING": logging.WARNING,
-            "ERROR": logging.ERROR,
-            "CRITICAL": logging.CRITICAL
-        }
-        level = level_map.get(severity.upper(), logging.WARNING)
+            level_map = {
+                "INFO": logging.INFO,
+                "WARNING": logging.WARNING,
+                "ERROR": logging.ERROR,
+                "CRITICAL": logging.CRITICAL
+            }
+            level = level_map.get(severity.upper(), logging.WARNING)
 
-        extra = {
-            "event_type": event_type,
-            "severity": severity.upper(),
-            "metadata": metadata
-        }
+            extra = {
+                "event_type": event_type,
+                "severity": severity.upper(),
+                "metadata": metadata
+            }
 
-        _logger.log(level, message, extra=extra, exc_info=exc_info)
+            _logger.log(level, message, extra=extra, exc_info=exc_info)
+
+    PipelineExecutor.execute(
+        _inner,
+        default=None,
+        fatal_exceptions=(KeyboardInterrupt, SystemExit)
+    )
 
 
 def trigger_alert(message: str) -> None:
@@ -96,43 +104,56 @@ def trigger_alert(message: str) -> None:
 
 
 def generate_alert(event: Dict[str, Any]) -> Dict[str, Any]:
-    if not isinstance(event, dict):
-        raise TypeError("event must be a dictionary")
+    def _inner():
+        if not isinstance(event, dict):
+            raise TypeError("event must be a dictionary")
 
-    if "type" not in event:
-        raise ValueError("missing required field: type")
-    if "message" not in event:
-        raise ValueError("missing required field: message")
+        if "type" not in event:
+            raise ValueError("missing required field: type")
+        if "message" not in event:
+            raise ValueError("missing required field: message")
 
-    severity_map = {
-        "info": "LOW",
-        "suspicious_activity": "MEDIUM",
-        "multiple_failures": "HIGH",
-        "critical_anomaly": "CRITICAL"
-    }
-    event_type = event["type"]
-    severity = severity_map.get(event_type, "LOW")
+        severity_map = {
+            "info": "LOW",
+            "suspicious_activity": "MEDIUM",
+            "multiple_failures": "HIGH",
+            "critical_anomaly": "CRITICAL"
+        }
+        event_type = event["type"]
+        severity = severity_map.get(event_type, "LOW")
 
-    if "timestamp" in event:
-        timestamp = event["timestamp"]
-    else:
-        timestamp = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+        if "timestamp" in event:
+            timestamp = event["timestamp"]
+        else:
+            timestamp = datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
 
-    description = event["message"]
+        description = event["message"]
 
-    alert = {
-        "severity": severity,
-        "timestamp": timestamp,
-        "description": description,
-        "event_type": event_type,
-        "source": event.get("source", "unknown")
-    }
+        alert = {
+            "severity": severity,
+            "timestamp": timestamp,
+            "description": description,
+            "event_type": event_type,
+            "source": event.get("source", "unknown")
+        }
 
-    for key, value in event.items():
-        if key not in ["type", "message", "timestamp", "severity", "description", "event_type", "source"]:
-            alert[key] = value
+        for key, value in event.items():
+            if key not in ["type", "message", "timestamp", "severity", "description", "event_type", "source"]:
+                alert[key] = value
 
-    return alert
+        return alert
+
+    return PipelineExecutor.execute(
+        _inner,
+        default={
+            "severity": "LOW",
+            "timestamp": datetime.now(timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z'),
+            "description": "Alert generation failed due to internal error",
+            "event_type": "ERROR",
+            "source": "internal"
+        },
+        fatal_exceptions=(KeyboardInterrupt, SystemExit)
+    )
 
 
 if __name__ == "__main__":

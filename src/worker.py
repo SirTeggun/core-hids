@@ -1,5 +1,6 @@
 import queue
 import logging
+from src.executor import PipelineExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -11,10 +12,12 @@ def detection_worker(event_queue, engine, shutdown_event):
             if ip is None:
                 continue
 
-            try:
-                engine.process_failed_login(ip)
-            except Exception as e:
-                logger.error(f"Detection error for IP {ip}", exc_info=True)
+            PipelineExecutor.execute(
+                engine.process_failed_login,
+                ip,
+                default=None,
+                fatal_exceptions=(KeyboardInterrupt, SystemExit)
+            )
 
             event_queue.task_done()
 

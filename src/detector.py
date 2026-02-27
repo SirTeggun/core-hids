@@ -1,6 +1,7 @@
 import time
 import statistics
 from src.alerts import trigger_alert
+from src.executor import PipelineExecutor
 from typing import Dict, Any
 
 
@@ -138,9 +139,12 @@ class DetectionEngine:
 
         if failed_count > threshold:
             if self._can_trigger_alert(f"baseline_{ip}"):
-                trigger_alert(
+                PipelineExecutor.execute(
+                    trigger_alert,
                     f"Behavioural anomaly detected from IP {ip} "
-                    f"(count={failed_count}, threshold={threshold:.2f})"
+                    f"(count={failed_count}, threshold={threshold:.2f})",
+                    default=None,
+                    fatal_exceptions=(KeyboardInterrupt, SystemExit)
                 )
 
         burst_count = len([
@@ -150,16 +154,22 @@ class DetectionEngine:
 
         if burst_count >= self.BURST_THRESHOLD:
             if self._can_trigger_alert(f"burst_{ip}"):
-                trigger_alert(
+                PipelineExecutor.execute(
+                    trigger_alert,
                     f"Burst attack detected from IP {ip} "
-                    f"(burst_count={burst_count})"
+                    f"(burst_count={burst_count})",
+                    default=None,
+                    fatal_exceptions=(KeyboardInterrupt, SystemExit)
                 )
 
         if state["score"] >= self.RISK_THRESHOLD:
             if self._can_trigger_alert(f"risk_{ip}"):
-                trigger_alert(
+                PipelineExecutor.execute(
+                    trigger_alert,
                     f"High risk intrusion detected from IP {ip} "
-                    f"(score={state['score']})"
+                    f"(score={state['score']})",
+                    default=None,
+                    fatal_exceptions=(KeyboardInterrupt, SystemExit)
                 )
 
 
