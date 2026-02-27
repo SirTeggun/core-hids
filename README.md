@@ -10,19 +10,19 @@ The project is written in Python and follows a separation-of-concerns architectu
 
 ## Project Structure
 
-
+```bash
 src/
-├── alerts.py # Alert generation and management
-├── baseline.py # Behavioral baseline profiling
-├── config.py # System configuration parameters
-├── detector.py # Core detection logic (legacy entry / bridge to DetectionEngine)
-├── log_monitor.py # System log monitoring module
-├── logger.py # Internal logging framework
-├── main.py # Application entry point
-├── persistence.py # Event storage and history backend
-├── worker.py # Concurrent processing layer
-└── init.py
-
+├── __init__.py
+├── main.py
+├── config.py
+├── logger.py
+├── detector.py
+├── log_monitor.py
+├── baseline.py
+├── alerts.py
+├── persistence.py
+├── worker.py
+```
 
 ---
 
@@ -82,9 +82,12 @@ Supports concurrent event processing and pipeline execution.
 
 ```bash
 git clone https://github.com/yourusername/CORE-HIDS.git
+```
+```bash
 cd CORE-HIDS
+```
+```bash
 pip install -r requirements.txt
-
 ```
 
 ---
