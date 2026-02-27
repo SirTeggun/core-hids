@@ -124,10 +124,7 @@ source .venv/bin/activate # or .venv\Scripts\activate on Windows
 ```bash
 pip install -r requirements.txt
 ```
-## Run Tests
-```bash
-pytest tests/ -v
-```
+
 ---
 
 ## Usage
