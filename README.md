@@ -55,21 +55,6 @@ The detection pipeline operates through the following stages:
 
 - Concurrent Processing – The worker module supports asynchronous execution to improve pipeline throughput and reduce detection latency.
 
-### Planned Evolution
-
-- The future development roadmap aims to transform CORE-HIDS into a more advanced detection framework by introducing the following enhancements:
-
-- Refactoring core detection logic into a dedicated DetectionEngine class to centralize pipeline orchestration.
-
-- Implementing modular rule objects to enable flexible detection strategy composition.
-
-- Introducing severity scoring mechanisms combined with escalation policy management.
-
-- Expanding the persistence layer to support scalable and reliable long-term storage of security events.
-
-- Optimizing runtime performance for near real-time monitoring and analysis worklo
----
-
 ## Core Modules
 
 ### detector.py
@@ -125,7 +110,7 @@ This layer is particularly important for maintaining performance under high moni
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/CORE-HIDS.git
+git clone https://github.com/SirTeggun/CORE-HIDS.git
 ```
 ```bash
 cd CORE-HIDS
