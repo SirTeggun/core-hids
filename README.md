@@ -22,6 +22,7 @@ CORE-HIDS/
 │   ├── baseline.py
 │   ├── config.py
 │   ├── detector.py
+│   ├── detection_context.py
 │   ├── executor.py
 │   ├── log_monitor.py
 │   ├── logger.py
