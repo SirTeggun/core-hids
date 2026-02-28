@@ -5,8 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class PipelineExecutor:
-    """Centralized safe execution wrapper for pipeline steps."""
-
     @staticmethod
     def execute(
         step_function: Callable,
@@ -16,11 +14,19 @@ class PipelineExecutor:
         fatal_exceptions: Tuple[type, ...] = (),
         **kwargs: Any
     ) -> Any:
-        """Execute a callable safely, returning `default` on non-fatal errors."""
-
         if not callable(step_function):
-            logger.error("Non-callable passed to PipelineExecutor")
+            logger.error(
+                "PipelineExecutor: non-callable received",
+                extra={
+                    "object_type": type(step_function).__name__,
+                    "object_repr": repr(step_function)
+                }
+            )
             return default
+
+        func_name = getattr(step_function, "__name__", None)
+        if func_name is None:
+            func_name = repr(step_function)
 
         try:
             return step_function(*args, **kwargs)
@@ -29,11 +35,24 @@ class PipelineExecutor:
         except Exception as e:
             logger.log(
                 log_level,
-                "Error executing function",
+                "PipelineExecutor: error executing function",
                 extra={
-                    "function_name": getattr(step_function, "__name__", str(step_function)),
+                    "function_name": func_name,
+                    "args": _safe_repr(args),
+                    "kwargs": _safe_repr(kwargs),
+                    "error_type": type(e).__name__,
                     "error": str(e),
                 },
                 exc_info=True,
             )
             return default
+
+
+def _safe_repr(obj: Any, max_len: int = 200) -> str:
+    try:
+        repr_str = repr(obj)
+        if len(repr_str) > max_len:
+            return repr_str[:max_len] + "..."
+        return repr_str
+    except Exception:
+        return f"<unrepresentable: {type(obj).__name__}>"
