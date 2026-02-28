@@ -1,7 +1,3 @@
-# ================================
-# CORE-HIDS Configuration File
-# ================================
-
 import logging
 import os
 
